@@ -86,7 +86,8 @@ const json = await res.json();
 |------|-----|
 | 主色（黃）| `#F5C518` |
 | 深色（黃 hover）| `#e6b800` |
-| 背景（黑）| `#111111` |
+| 背景（暖米色）| `#ede8df` |
+| 深色背景（對話頁側欄）| `#111111` |
 | 字體 | system-ui, -apple-system, 'Noto Sans TC' |
 | 品牌名稱 | AI Coach |
 | 副標 | 企業主計畫 |
