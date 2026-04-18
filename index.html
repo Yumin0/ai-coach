@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Coach｜企業主計畫</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #F5C518;
+      --yellow-dark: #e6b800;
+      --black: #111111;
+      --black2: #1a1a1a;
+      --gray1: #222222;
+      --gray2: #333333;
+      --gray3: #888888;
+      --gray4: #cccccc;
+      --white: #ffffff;
+      --bg: #f7f7f5;
+      --card-bg: #ffffff;
+      --border: #e5e5e5;
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── 頂欄 ── */
+    .topbar {
+      background: var(--black);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-logo {
+      width: 28px; height: 28px;
+      flex-shrink: 0;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; color: var(--white); }
+    .topbar-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    /* ── Tab ── */
+    .tab-bar {
+      background: var(--black);
+      display: flex;
+      padding: 0 20px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .tab {
+      padding: 11px 0;
+      margin-right: 28px;
+      font-size: 13px;
+      color: var(--gray3);
+      border-bottom: 2px solid transparent;
+      cursor: default;
+      user-select: none;
+    }
+    .tab.active {
+      color: var(--yellow);
+      border-bottom-color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* ── 畫面切換 ── */
+    .screen { display: none; flex: 1; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* ── 設定頁 ── */
+    .setup-content {
+      max-width: 560px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+    .screen-title { font-size: 20px; font-weight: 700; color: var(--black2); margin-bottom: 6px; }
+    .screen-sub { font-size: 13px; color: var(--gray3); margin-bottom: 26px; line-height: 1.7; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--black2);
+      background: #fafafa;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--yellow);
+      background: #fff;
+    }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-hint { font-size: 11px; color: var(--gray3); margin-top: 4px; }
+
+    /* chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 6px 13px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      color: #555;
+      cursor: pointer;
+      background: #fafafa;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .chip:hover { border-color: var(--yellow); color: var(--black2); }
+    .chip.selected {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .start-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--yellow);
+      color: var(--black);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .start-btn:hover { background: var(--yellow-dark); }
+
+    /* ── 對話頁 ── */
+    .session-layout {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      max-width: 560px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 0 32px;
+    }
+
+    .avatar-section {
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px 22px;
+    }
+    .avatar-ring {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: 2.5px solid var(--yellow);
+      display: flex; align-items: center; justify-content: center;
+      background: var(--gray1);
+      font-size: 38px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .avatar-dot {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 2.5px solid var(--black);
+    }
+    .avatar-name { font-size: 17px; font-weight: 700; color: var(--white); }
+    .avatar-meta { font-size: 13px; color: var(--gray3); margin-top: 3px; }
+
+    .context-card {
+      margin: 16px 20px 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .context-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .context-row:last-child { margin-bottom: 0; }
+    .context-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--yellow);
+      color: var(--black);
+      white-space: nowrap;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .context-text { font-size: 13px; color: #444; line-height: 1.6; }
+
+    /* 語音區 */
+    .voice-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      gap: 20px;
+    }
+    .voice-status {
+      font-size: 13px;
+      color: var(--gray3);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* MaiAgent widget 容器 */
+    .widget-wrap {
+      width: 100%;
+      min-height: 120px;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      position: relative;
+      overflow: hidden;
+    }
+    .widget-loading {
+      font-size: 13px;
+      color: var(--gray3);
+      text-align: center;
+      padding: 24px;
+    }
+    .widget-error {
+      font-size: 13px;
+      color: #e24b4a;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .reset-link {
+      font-size: 13px;
+      color: var(--gray3);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 0;
+    }
+    .reset-link:hover { color: #555; }
+
+    /* ── 響應式 ── */
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+      .setup-content { padding: 20px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 頂欄 -->
+<div class="topbar">
+  <svg class="topbar-logo" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="14" cy="14" r="13" fill="#F5C518"/>
+    <polygon points="11,7 21,14 11,21" fill="#111111"/>
+  </svg>
+  <span class="topbar-title">AI Coach</span>
+  <span class="topbar-badge">企業主計畫</span>
+</div>
+
+<!-- Tab -->
+<div class="tab-bar">
+  <div class="tab active" id="tab1">情境設定</div>
+  <div class="tab" id="tab2">對話練習</div>
+</div>
+
+<!-- 第一頁：情境設定 -->
+<div class="screen active" id="screen1">
+  <div class="setup-content">
+    <p class="screen-title">設定練習情境</p>
+    <p class="screen-sub">填寫職員背景與溝通目標，AI 會根據這些資訊進入角色。描述越具體，練習越真實。</p>
+
+    <div class="card">
+      <p class="card-title">職員資料</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">姓名</label>
+          <input class="form-input" type="text" placeholder="例：王小明" id="emp-name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">年資</label>
+          <input class="form-input" type="text" placeholder="例：3年" id="emp-years" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">職位</label>
+        <input class="form-input" type="text" placeholder="例：業務專員、資深工程師" id="emp-role" />
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">個性與背景描述</label>
+        <textarea class="form-textarea" placeholder="例：在公司五年的資深員工，最近業績持續下滑，對於主管的要求有些抗拒，但整體態度還算配合。私下聽說他最近家裡有些狀況。" id="emp-bg"></textarea>
+        <p class="form-hint">描述越具體，AI 扮演越真實</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title">這次談話的目標（可複選）</p>
+      <div class="chips" id="chips">
+        <div class="chip" onclick="toggleChip(this)">了解業績下滑原因</div>
+        <div class="chip" onclick="toggleChip(this)">給予改善期限</div>
+        <div class="chip" onclick="toggleChip(this)">傳達組織變革</div>
+        <div class="chip" onclick="toggleChip(this)">討論薪資調整</div>
+        <div class="chip" onclick="toggleChip(this)">處理離職意願</div>
+        <div class="chip" onclick="toggleChip(this)">給予績效回饋</div>
+        <div class="chip" onclick="toggleChip(this)">建立改善計畫</div>
+        <div class="chip" onclick="toggleChip(this)">未履行承諾</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title">補充說明（選填）</p>
+      <div class="form-group" style="margin-bottom:0">
+        <textarea class="form-textarea" placeholder="其他想特別練習的溝通重點？例如：練習如何在不傷感情的情況下傳達壓力。" id="emp-extra" style="min-height:60px"></textarea>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startSession()">開始練習 →</button>
+  </div>
+</div>
+
+<!-- 第二頁：對話練習 -->
+<div class="screen" id="screen2">
+  <div class="session-layout">
+    <div class="avatar-section">
+      <div class="avatar-ring">
+        👤
+        <div class="avatar-dot"></div>
+      </div>
+      <p class="avatar-name" id="display-name">—</p>
+      <p class="avatar-meta" id="display-meta">—</p>
+    </div>
+
+    <div class="context-card">
+      <div class="context-row">
+        <span class="context-tag">背景</span>
+        <span class="context-text" id="display-bg">—</span>
+      </div>
+      <div class="context-row">
+        <span class="context-tag">目標</span>
+        <span class="context-text" id="display-goal">—</span>
+      </div>
+    </div>
+
+    <div class="voice-area">
+      <p class="voice-status" id="voice-status">正在載入語音助理，請稍候...</p>
+      <div class="widget-wrap" id="widget-wrap">
+        <p class="widget-loading" id="widget-msg">連線中...</p>
+      </div>
+      <button class="reset-link" onclick="resetSession()">← 重新設定情境</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // 請將下方 GAS_URL 替換成你的 GAS 部署網址
+  // 格式：https://script.google.com/macros/s/XXXXXXXX/exec
+  // ============================================================
+  const GAS_URL = 'YOUR_GAS_DEPLOY_URL_HERE';
+
+  function toggleChip(el) {
+    el.classList.toggle('selected');
+  }
+
+  function switchTab(n) {
+    document.getElementById('tab1').classList.toggle('active', n === 1);
+    document.getElementById('tab2').classList.toggle('active', n === 2);
+    document.getElementById('screen1').classList.toggle('active', n === 1);
+    document.getElementById('screen2').classList.toggle('active', n === 2);
+  }
+
+  async function startSession() {
+    const name    = document.getElementById('emp-name').value.trim() || '職員';
+    const years   = document.getElementById('emp-years').value.trim();
+    const role    = document.getElementById('emp-role').value.trim() || '職員';
+    const bg      = document.getElementById('emp-bg').value.trim() || '（未填寫）';
+    const selected = [...document.querySelectorAll('.chip.selected')].map(c => c.textContent).join('、');
+    const extra   = document.getElementById('emp-extra').value.trim();
+    const goal    = [selected, extra].filter(Boolean).join('、') || '（未填寫）';
+
+    // 更新對話頁資訊
+    document.getElementById('display-name').textContent = name;
+    document.getElementById('display-meta').textContent = role + (years ? '・' + years : '');
+    document.getElementById('display-bg').textContent   = bg;
+    document.getElementById('display-goal').textContent = goal;
+    document.getElementById('voice-status').textContent = 'AI 已進入角色，請開口說第一句話';
+    document.getElementById('widget-msg').textContent   = '連線中...';
+
+    switchTab(2);
+
+    // 向 GAS 取得語音 token
+    try {
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'getVoiceToken' })
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        showWidgetError('無法取得語音連線：' + data.error);
+        return;
+      }
+
+      // 將 token 注入 MaiAgent widget
+      initMaiAgentWidget(data);
+
+    } catch (err) {
+      showWidgetError('連線失敗，請確認 GAS 網址設定正確。\n' + err.message);
+    }
+  }
+
+  function initMaiAgentWidget(tokenData) {
+    const wrap = document.getElementById('widget-wrap');
+    wrap.innerHTML = '';
+
+    // MaiAgent 語音 widget 初始化
+    // 根據 MaiAgent 文件，用取得的 token 啟動語音介面
+    window.maiagentChatbotConfig = {
+      webChatId: '26a7ff94-bce8-4a1f-988f-f41990cd417b',
+      baseUrl: 'https://chat.maiagent.ai/web-chats',
+      primaryColor: '#F5C518',
+      token: tokenData.token || tokenData
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://chat.maiagent.ai/web-chats/loader.js';
+    script.onload = () => {
+      document.getElementById('voice-status').textContent = 'AI 已準備好，請開口說第一句話開始練習';
+    };
+    script.onerror = () => {
+      showWidgetError('語音 widget 載入失敗，請重新整理頁面再試。');
+    };
+    document.body.appendChild(script);
+  }
+
+  function showWidgetError(msg) {
+    const wrap = document.getElementById('widget-wrap');
+    wrap.innerHTML = `<p class="widget-error">${msg}</p>`;
+    document.getElementById('voice-status').textContent = '連線發生問題';
+  }
+
+  function resetSession() {
+    // 清除 widget
+    const wrap = document.getElementById('widget-wrap');
+    wrap.innerHTML = '<p class="widget-loading" id="widget-msg">連線中...</p>';
+
+    // 移除舊的 widget script
+    const oldScript = document.querySelector('script[src*="maiagent"]');
+    if (oldScript) oldScript.remove();
+
+    switchTab(1);
+  }
+</script>
+
+</body>
+</html>
