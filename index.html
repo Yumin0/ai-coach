@@ -287,10 +287,10 @@
   async function startSession() {
     const name  = document.getElementById('emp-name').value.trim() || '職員';
     const years = document.getElementById('emp-years').value.trim();
-    const role  = document.getElementById('emp-role').value.trim() || '職員';
+    const role  = document.getElementById('emp-role')?.value.trim() || '職員';
     const bg    = document.getElementById('emp-bg').value.trim() || '（未填寫）';
     const selected = [...document.querySelectorAll('.chip.selected')].map(c => c.textContent).join('、');
-    const extra = document.getElementById('emp-extra').value.trim();
+    const extra = document.getElementById('emp-extra')?.value.trim() || '';
     const goal  = [selected, extra].filter(Boolean).join('、') || '（未填寫）';
 
     document.getElementById('display-name').textContent = name;
