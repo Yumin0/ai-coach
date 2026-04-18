@@ -14,19 +14,16 @@
       --gray1: #222222;
       --gray3: #888888;
       --white: #ffffff;
-      --bg: #f7f7f5;
+      --bg: #ede8df;
       --card-bg: #ffffff;
-      --border: #e5e5e5;
-      --radius: 10px;
-      --radius-sm: 6px;
+      --border: #e0d9ce;
+      --radius: 14px;
+      --radius-sm: 8px;
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'Segoe UI', sans-serif; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
 
-    .topbar { background: var(--black); padding: 14px 20px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; }
-    .topbar-logo { width: 28px; height: 28px; flex-shrink: 0; }
-    .topbar-title { font-size: 15px; font-weight: 600; color: var(--white); }
-    .topbar-badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--yellow); color: var(--black); }
-
+    /* 舊 topbar/tabs 隱藏（對話頁 screen2 仍用） */
+    .topbar { display: none; }
     .tab-bar { background: var(--black); display: flex; padding: 0 20px; border-bottom: 1px solid #2a2a2a; }
     .tab { padding: 11px 0; margin-right: 28px; font-size: 13px; color: var(--gray3); border-bottom: 2px solid transparent; cursor: default; user-select: none; }
     .tab.active { color: var(--yellow); border-bottom-color: var(--yellow); font-weight: 600; }
@@ -34,27 +31,56 @@
     .screen { display: none; flex: 1; flex-direction: column; }
     .screen.active { display: flex; }
 
-    /* 設定頁 */
-    .setup-content { max-width: 560px; width: 100%; margin: 0 auto; padding: 28px 20px 40px; }
-    .screen-title { font-size: 20px; font-weight: 700; color: var(--black2); margin-bottom: 6px; }
-    .screen-sub { font-size: 13px; color: var(--gray3); margin-bottom: 26px; line-height: 1.7; }
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
-    .card-title { font-size: 12px; font-weight: 700; color: var(--gray3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+    /* ── 設定頁：雙欄版面 ── */
+    #screen1.active { flex-direction: row; align-items: stretch; min-height: 100vh; padding: 24px; gap: 20px; }
+
+    /* 左欄：表單 */
+    .setup-panel-left { background: var(--card-bg); border-radius: var(--radius); padding: 32px 28px 28px; display: flex; flex-direction: column; width: 420px; flex-shrink: 0; overflow-y: auto; }
+    .setup-brand { font-size: 11px; font-weight: 700; color: var(--gray3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 18px; }
+    .screen-title { font-size: 22px; font-weight: 700; color: var(--black2); margin-bottom: 8px; }
+    .screen-sub { font-size: 13px; color: var(--gray3); margin-bottom: 24px; line-height: 1.7; }
+
+    .section-label { font-size: 12px; font-weight: 700; color: var(--black2); margin-bottom: 10px; margin-top: 20px; }
+    .section-label:first-of-type { margin-top: 0; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-group { margin-bottom: 14px; }
+    .form-group { margin-bottom: 12px; }
     .form-group:last-child { margin-bottom: 0; }
-    .form-label { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; display: block; }
-    .form-input, .form-textarea { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; color: var(--black2); background: #fafafa; font-family: inherit; transition: border-color 0.15s; }
+    .form-label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; display: block; }
+    .form-input, .form-textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; color: var(--black2); background: #faf8f4; font-family: inherit; transition: border-color 0.15s; }
     .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--yellow); background: #fff; }
-    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-textarea { resize: vertical; min-height: 88px; }
     .form-hint { font-size: 11px; color: var(--gray3); margin-top: 4px; }
+
+    .chips-label { font-size: 13px; font-weight: 600; color: var(--black2); margin-bottom: 10px; margin-top: 20px; }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { padding: 6px 13px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: #555; cursor: pointer; background: #fafafa; transition: all 0.15s; user-select: none; }
+    .chip { padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 13px; color: #666; cursor: pointer; background: #faf8f4; transition: all 0.15s; user-select: none; }
     .chip:hover { border-color: var(--yellow); color: var(--black2); }
     .chip.selected { background: var(--yellow); border-color: var(--yellow); color: var(--black); font-weight: 600; }
-    .start-btn { width: 100%; padding: 14px; background: var(--yellow); color: var(--black); border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; font-family: inherit; transition: background 0.15s; }
+
+    .start-btn { width: 100%; padding: 15px; background: var(--yellow); color: var(--black); border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 24px; font-family: inherit; transition: background 0.15s; }
     .start-btn:hover { background: var(--yellow-dark); }
     .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* 右欄：AI 預覽 */
+    .setup-panel-right { flex: 1; background: var(--card-bg); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; min-height: 400px; }
+    .setup-preview-status { position: absolute; top: 16px; right: 16px; font-size: 12px; color: #aaa; display: flex; align-items: center; gap: 6px; }
+    .setup-preview-status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ccc; display: inline-block; }
+    .setup-preview-stripes { position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, transparent, transparent 12px, rgba(0,0,0,0.04) 12px, rgba(0,0,0,0.04) 14px); }
+    .setup-preview-placeholder { position: relative; text-align: center; }
+    .setup-preview-box { border: 1px solid #ccc; border-radius: 4px; padding: 8px 18px; font-size: 13px; color: #aaa; font-family: monospace; margin-bottom: 8px; background: rgba(255,255,255,0.7); }
+    .setup-preview-hint { font-size: 12px; color: #bbb; }
+    .setup-preview-footer { position: absolute; bottom: 20px; font-size: 13px; color: #aaa; text-align: center; }
+    /* 底部假控制列 */
+    .setup-preview-controls { display: flex; align-items: center; gap: 24px; position: absolute; bottom: 20px; }
+    .ctrl-label { font-size: 13px; color: #aaa; display: flex; align-items: center; gap: 6px; }
+    .ctrl-mic { width: 52px; height: 52px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; }
+    .ctrl-mic svg { width: 22px; height: 22px; fill: var(--black); }
+
+    /* 舊 setup-content（已棄用但保留以防萬一） */
+    .setup-content { display: none; }
+    /* card 隱藏（設定頁改用 section-label） */
+    #screen1 .card { background: none; border: none; padding: 0; margin-bottom: 0; }
+    #screen1 .card-title { display: none; }
 
     /* 對話頁 - 雙欄佈局 */
     .session-layout { display: grid; grid-template-columns: 300px 1fr; flex: 1; min-height: 0; overflow: hidden; }
@@ -90,6 +116,12 @@
     .end-btn { padding: 10px 28px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card-bg); font-size: 13px; color: #e24b4a; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .end-btn:hover { background: #fff0f0; border-color: #e24b4a; }
 
+    @media (max-width: 768px) {
+      #screen1.active { flex-direction: column; padding: 16px; gap: 16px; }
+      .setup-panel-left { width: 100%; }
+      .setup-panel-right { min-height: 260px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
     @media (max-width: 640px) {
       .session-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
       .left-panel { padding: 16px 20px; gap: 12px; border-right: none; border-bottom: 1px solid #2a2a2a; }
@@ -97,80 +129,82 @@
       .right-panel { padding: 28px 20px; }
       .avatar-ring { width: 100px; height: 100px; font-size: 40px; }
     }
-    @media (max-width: 480px) {
-      .form-row { grid-template-columns: 1fr; }
-      .setup-content { padding: 20px 16px 40px; }
-    }
   </style>
 </head>
 <body>
 
-<div class="topbar">
-  <svg class="topbar-logo" viewBox="0 0 28 28" fill="none">
-    <circle cx="14" cy="14" r="13" fill="#F5C518"/>
-    <polygon points="11,7 21,14 11,21" fill="#111111"/>
-  </svg>
-  <span class="topbar-title">AI Coach</span>
-  <span class="topbar-badge">企業主計畫</span>
-</div>
-
-<div class="tab-bar">
+<!-- topbar 隱藏（對話頁用 tab-bar 切換） -->
+<div class="topbar"></div>
+<div class="tab-bar" style="display:none">
   <div class="tab active" id="tab1">情境設定</div>
   <div class="tab" id="tab2">對話練習</div>
 </div>
 
 <!-- 設定頁 -->
 <div class="screen active" id="screen1">
-  <div class="setup-content">
+
+  <!-- 左欄：表單 -->
+  <div class="setup-panel-left">
+    <p class="setup-brand">AI COACH · 企業主計畫</p>
     <p class="screen-title">設定練習情境</p>
     <p class="screen-sub">填寫職員背景與溝通目標，AI 會根據這些資訊進入角色。描述越具體，練習越真實。</p>
 
-    <div class="card">
-      <p class="card-title">職員資料</p>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">姓名</label>
-          <input class="form-input" type="text" placeholder="例：王小明" id="emp-name" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">年資</label>
-          <input class="form-input" type="text" placeholder="例：3年" id="emp-years" />
-        </div>
+    <p class="section-label">職員資料</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">姓名</label>
+        <input class="form-input" type="text" placeholder="例：王小明" id="emp-name" />
       </div>
       <div class="form-group">
-        <label class="form-label">職位</label>
-        <input class="form-input" type="text" placeholder="例：業務專員、資深工程師" id="emp-role" />
-      </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">個性與背景描述</label>
-        <textarea class="form-textarea" placeholder="例：在公司五年的資深員工，最近業績持續下滑，對於主管的要求有些抗拒，但整體態度還算配合。" id="emp-bg"></textarea>
-        <p class="form-hint">描述越具體，AI 扮演越真實</p>
+        <label class="form-label">年資</label>
+        <input class="form-input" type="text" placeholder="例：3年" id="emp-years" />
       </div>
     </div>
-
-    <div class="card">
-      <p class="card-title">這次談話的目標（可複選）</p>
-      <div class="chips">
-        <div class="chip" onclick="toggleChip(this)">了解業績下滑原因</div>
-        <div class="chip" onclick="toggleChip(this)">給予改善期限</div>
-        <div class="chip" onclick="toggleChip(this)">傳達組織變革</div>
-        <div class="chip" onclick="toggleChip(this)">討論薪資調整</div>
-        <div class="chip" onclick="toggleChip(this)">處理離職意願</div>
-        <div class="chip" onclick="toggleChip(this)">給予績效回饋</div>
-        <div class="chip" onclick="toggleChip(this)">建立改善計畫</div>
-        <div class="chip" onclick="toggleChip(this)">未履行承諾</div>
-      </div>
+    <div class="form-group">
+      <label class="form-label">個性與背景描述</label>
+      <textarea class="form-textarea" placeholder="例：在公司五年的資深員工，最近業績持續下滑，對於主管的要求有些抗拒，但整體態度還算配合。" id="emp-bg"></textarea>
+      <p class="form-hint">描述越具體，AI 扮演越真實</p>
     </div>
 
-    <div class="card">
-      <p class="card-title">補充說明（選填）</p>
-      <div class="form-group" style="margin-bottom:0">
-        <textarea class="form-textarea" placeholder="其他想特別練習的溝通重點？" id="emp-extra" style="min-height:60px"></textarea>
-      </div>
+    <p class="chips-label">這次談話的目標（可複選）</p>
+    <div class="chips">
+      <div class="chip" onclick="toggleChip(this)">了解業績下滑原因</div>
+      <div class="chip" onclick="toggleChip(this)">給予改善期限</div>
+      <div class="chip" onclick="toggleChip(this)">傳達組織變革</div>
+      <div class="chip" onclick="toggleChip(this)">討論薪資調整</div>
+      <div class="chip" onclick="toggleChip(this)">處理離職意願</div>
+      <div class="chip" onclick="toggleChip(this)">給予績效回饋</div>
+      <div class="chip" onclick="toggleChip(this)">建立改善計畫</div>
+      <div class="chip" onclick="toggleChip(this)">未履行承諾</div>
     </div>
 
     <button class="start-btn" id="start-btn" onclick="startSession()">開始練習 →</button>
   </div>
+
+  <!-- 右欄：AI 預覽 -->
+  <div class="setup-panel-right">
+    <div class="setup-preview-stripes"></div>
+    <span class="setup-preview-status">idle</span>
+    <div class="setup-preview-placeholder">
+      <div class="setup-preview-box">[ ai_character.png ]</div>
+      <div class="setup-preview-hint">drop 3D portrait here · 1:1</div>
+    </div>
+    <div class="setup-preview-controls">
+      <span class="ctrl-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Dialog
+      </span>
+      <div class="ctrl-mic">
+        <svg viewBox="0 0 24 24"><path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v6a2 2 0 0 0 4 0V5a2 2 0 0 0-2-2zm7 8a1 1 0 0 1 .993.883L20 12a8 8 0 0 1-7 7.938V22h2a1 1 0 0 1 0 2H9a1 1 0 0 1 0-2h2v-2.062A8 8 0 0 1 4 12a1 1 0 0 1 2 0 6 6 0 0 0 12 0 1 1 0 0 1 1-1z"/></svg>
+      </div>
+      <span class="ctrl-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        Pause
+      </span>
+    </div>
+    <p class="setup-preview-footer">填寫左側資料後點擊「開始練習」</p>
+  </div>
+
 </div>
 
 <!-- 對話頁 -->
@@ -246,6 +280,8 @@
     document.getElementById('tab2').classList.toggle('active', n === 2);
     document.getElementById('screen1').classList.toggle('active', n === 1);
     document.getElementById('screen2').classList.toggle('active', n === 2);
+    // tab-bar only visible on conversation screen
+    document.querySelector('.tab-bar').style.display = n === 2 ? 'flex' : 'none';
   }
 
   async function startSession() {
