@@ -450,10 +450,11 @@
     // 向 GAS 取得語音 token
     try {
       const res = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getVoiceToken' })
-      });
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getVoiceToken' }),
+  redirect: 'follow'
+});
       const data = await res.json();
 
       if (data.error) {
